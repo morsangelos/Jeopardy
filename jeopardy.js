@@ -271,7 +271,7 @@ function CreatePopup(key, onDestroyCallback)
     var popup = $(popups[key]).clone();
     popup.attr("id", "");
     var c = popup.attr("class");
-    c = (c ? c + " " : "");
+    c = (c ? c + " popup-box " : "popup-box ");
     popup.attr("class", c + key);
     popup.wrap("<div class='popup " + key + "-container'></div>");
     popup = popup.parent();

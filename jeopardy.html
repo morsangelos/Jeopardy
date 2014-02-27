@@ -5,8 +5,8 @@
         <meta charset="utf-8" />
         <title></title>
         <script type="text/javascript" src="jquery-2.1.0.min.js"></script>
-        <script type="text/javascript" src="jeopardy.js"></script>
-        <link rel="stylesheet" type="text/css" href="jeopardy.css"  />
+        <script type="text/javascript" src="jeopardy2.js"></script>
+        <link rel="stylesheet" type="text/css" href="jeopardy2.css"  />
 
         <meta name='viewport' content='width=device-width; height=device-height;' />
         <style type='text/css'>
@@ -46,7 +46,7 @@
             </div>
             
             <div id="clue-popup">
-                <div class="container">
+                <div class="container clue-content">
                     <h1 class="category">Category</h1>
                     <div class="jeopardy-table">
                         <div class="jeopardy-row">
@@ -71,12 +71,14 @@
             </div>
             
             <div id="daily-double-popup">
-                <h1 class="non-selectable">Daily Double</h1>
-                <div class="wager-area non-selectable">
-                    Enter your wager
-                    <textarea></textarea>
-                    <div class="button non-selectable">
-                        Show Clue
+                <div class="clue-content">
+                    <h1 class="non-selectable">Daily Double</h1>
+                    <div class="wager-area non-selectable">
+                        Enter your wager
+                        <textarea></textarea>
+                        <div class="button non-selectable">
+                            Show Clue
+                        </div>
                     </div>
                 </div>
             </div>

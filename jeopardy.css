@@ -72,7 +72,7 @@ h2
 }
 
 #board .clue-row .jeopardy-cell {
-    border: 1px none gray;
+    border: 0.2vh solid black;
     background: #009;
     border-radius: 1vh;
     color:  white;
@@ -80,6 +80,19 @@ h2
     min-width:  19vh;
     width: 19vh;
     max-width: 19vh;
+
+}
+
+#board .clue-row .clue-cell {
+    transition: transform 0.05s, z-index;
+    transform: scale(1);
+    z-index: 0;
+}
+
+#board .clue-row .clue-cell:hover {
+    transition: transform 0.1s, z-index;
+    transform: scale(1.2);
+    z-index: 1
 }
 
 #board.jeopardy-table a
@@ -111,6 +124,21 @@ h2
     width: 100vw;
     height: 100vh;
     z-index:  1;
+}
+
+.popup-box
+{
+    animation: popup-enter 0.2s;
+}
+
+@keyframes popup-enter
+{
+    0% { transform: scale(0.5); 
+         opacity: 0;
+}
+    100% { transform: scale(1); 
+           opacity: 1;
+}
 }
 
 /* clue popup styles */
@@ -200,8 +228,7 @@ h2
     z-index: 10;
 }
 
-.daily-double-popup h1
-{
+.daily-double-popup h1 {
     text-transform: uppercase;
     font-size: 10vw;
     padding-left: 10vw;
@@ -209,16 +236,27 @@ h2
     text-wrap: none;
     overflow: hidden;
     font-family: 'Trebuchet MS';
-    color:  white;
-    transform:  skewY(-10deg) translateY(10vh);
+    color: white;
+    transform: skewY(-10deg) translateY(10vh);
     background: linear-gradient(to bottom, #FF8819 0%, #FFCB3D 100%);
+}
+
+.clue-content {
+    animation: clue-content-fill 0.3s;
+}
+
+@keyframes clue-content-fill
+{
+    0% { transform: scale(0.5); }
+    100% { transform: scale(1); }
 }
 
 .daily-double-popup .wager-area
 {
-    position: absolute;
-    bottom: 5vh;
-    right: 5vw;
+    position: relative;
+    margin-left: auto;
+    margin-top: 30vh;
+    width: 60%;
     
     font-size: 6vh;
 }
@@ -298,6 +336,19 @@ h2
     
     font-size: 4vh;
     font-family: Calibri;
+    animation: popup-scale 0.3s;
+}
+
+@keyframes popup-scale {
+    0% {
+        transform: translateY(4vh);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translate(0);
+        opacity: 1;
+    }
 }
 
 .add-team-popup textarea
@@ -324,7 +375,7 @@ h2
 {
     display: table;
     position: fixed;
-    bottom: -1vw;
+    bottom: -3vh;
     right: 0;
     color:  white;
     z-index: 2;
@@ -356,9 +407,19 @@ h2
     display: table-cell;
     border-top-left-radius: 1vh;
     border-top-right-radius: 1vh;
+    border-radius: 1vh;
+    padding-bottom: 1vh;
     border: 2px solid white;
-    border-bottom-style: none;
+    /* border-bottom-style: none; */
     background: black;
+    transform: translateY(0vh);
+    transition: transform 0.05s;
+}
+
+#score-box ul.team-list li:hover
+{
+    transform: translateY(-1vh);
+    transition: transform 0.1s;
 }
 
 #score-box ul.team-list li.team-score
@@ -437,10 +498,12 @@ h2
     margin: 0.1vw;
     background: inherit;
     cursor: pointer;
+    transition: background 0.05s, color 0.05s;
 }
 
-.score-buttons div:hover
+.score-buttons div:active
 {
+    transition: background 0.1s, color 0.1s;
     background: white;
     color:  black;
 }
