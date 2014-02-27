@@ -3,251 +3,290 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title></title>
+        <title>Jeopardy</title>
         <script type="text/javascript" src="jquery-2.1.0.min.js"></script>
-        <script type="text/javascript" src="jeopardy.js"></script>
-        <link rel="stylesheet" type="text/css" href="jeopardy.css"  />
+        <script type="text/javascript" src="jeopardy3.js"></script>
+        <link rel="stylesheet" type="text/css" href="jeopardy3.css"  />
 
-        <meta name='viewport' content='width=device-width; height=device-height;' />
-        <style type='text/css'>
-            @-ms-viewport { width: device-width; }
-            @-o-viewport { width: device-width; }
-            @viewport { width: device-width; }
-        </style>
+        <script>
+            $(document).ready(function () {
+                Jeopardy($("#main-page .clue-table"));
+            });
+        </script>
     </head>
     <body>
-        <div id="templates">
-            <span id="header-template" class="jeopardy-cell"><h1 class="container"></h1></span>
-            <a id="cell-template" class="jeopardy-cell clue-cell" href="#1"><h2 class="container"></h2></a>
-            <li id="team-score-template" class="team-score">
-                <div class="score-buttons">
-                    <div class="plus-button non-selectable">+</div>
-                    <div class="minus-button non-selectable">&minus;</div>
-                </div>
-                <div class="team-stats">
-                    <div class="team-name-container">
-                        <span class="team-name">Row Row Fight the power</span>
-                    </div>
-                    <div class="team-points">100</div>
-                </div>
-            </li>
-            <li id="team-wager-template" class="team-wager">
-                <span class="team-name"></span>
-                <textarea class="team-wager"></textarea>
-                <span class="team-points"></span>
-            </li>
-        </div>
-
-        <div id="popups">
-            <div id="add-team-popup">
-                Team Name:
-                <textarea></textarea>
-                <button>Add Team</button>
-            </div>
-            
-            <div id="clue-popup">
-                <div class="container">
-                    <h1 class="category">Category</h1>
-                    <div class="jeopardy-table">
-                        <div class="jeopardy-row">
-                            <div class="jeopardy-cell show-answer-container ">
-                                <a class="show-answer">Show Answer</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="jeopardy-table clue-table">
-                        <div class="jeopardy-row">
-                            <div class="jeopardy-cell">
-                                <div class="clue clue-text">
-                                    In the fourth movie of the Diamond and Pearl sagas, Kugimiya plays this legendary psychic Pokemon.
-                                </div>
-                                <div class="answer clue-text">
-                                    Celebi
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="daily-double-popup">
-                <h1 class="non-selectable">Daily Double</h1>
-                <div class="wager-area non-selectable">
-                    Enter your wager
-                    <textarea></textarea>
-                    <div class="button non-selectable">
-                        Show Clue
-                    </div>
-                </div>
-            </div>
-
-            <div id="final-jeopardy-popup">
-                <h1 class="non-selectable">Final Jeopardy</h1>
-                <div class="wager-area non-selectable">
-                    Enter your wagers
-                    <ul class="wager-list">
-                    </ul>
-                    <div class="button non-selectable">
-                        Show Clue
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div id="data">
-            <div id="preset-colors">
-                <span>#800</span>
-                <span>#080</span>
-                <span>#008</span>
-                <span>#408</span>
-				<span>#BA0</span>
-				<span>#000</span>
-				<span>#F80</span>
-                <span>#084</span>
+            <div id="preset-teams">
+                <div>Row row fight the power</div>
+                <div>Noein Team</div>
+                <div>Team Shota</div>
+                <div>Lucky&#x2606;Star</div>
+                <div data-color="#000000">Audience</div>
+            </div>
+            <div id="popups">
+                <div data-popup="clue" class="clue-popup popup-box non-selectable">
+                    <h1></h1>
+                    <div class="table">
+                        <div class="row clue-row"><div class="cell container"></div></div>
+                        <div class="row controls-row">
+                            <div class="cell"><span class="round-timer-button circle-button" title="Show Answer">&#9200;</span></div>
+                            <div class="cell"><span class="answer-timer-button circle-button" title="Show Answer">&#8987;</span></div>
+                            <div class="cell answer-timer-cell">
+                                <div class="answer-timer" data-interval-length="0.6" data-interval-count="10">&#x25ae;</div>
+                            </div>
+                            <div class="cell"><span class="answer-button circle-button" title="Show Answer">A</span></div>
+                        </div>
+                    </div>
+                    <div class="close-button circle-button">&times;</div>
+                    <div class="round-timer hide-toggle"><span class="timer-value">10</span></div>
+                </div>
+                <div data-popup="add-team" class="add-team-popup popup-box">
+                    <div>
+                        <h1>Team Name</h1>
+                        <input />
+                        <button>Add Team</button>
+                    </div>
+                    <div class="arrow">&#9660;</div>
+                </div>
+                <div data-popup="team-editor" class="team-editor-popup popup-box color-target non-selectable" data-target-style="background-color">
+                    <h1>Editting Team</h1>
+                    <h2 class="header-team-name"></h2>
+                    <div><span class="label">Name</span><input class="team-name" /></div>
+                    <div><span class="label">Score</span><input class="team-score" /></div>
+                    <div style="display:  none"><span class="label">Color</span><input class="team-color" /></div>
+                    <button class="save-changes">Save Changes</button>
+                    <button class="delete-team">Delete</button>
+                </div>
+                <div data-popup ="final-jeopardy-wager" class="final-jeopardy-wager-popup popup-box non-selectable">
+                    <h1>Final Jeopardy</h1>
+                    <h2 class="category-name">Category</h2>
+                    <h3>Make your wagers</h3>
+                    <div class="wager-list-container"><div class="wager-list table"></div>
+                    </div>
+                    <span class="reveal-clue circle-button">Reveal Clue</span>
+                </div>
             </div>
 
-            <span class="category-name" id="category1-name">Dance Revolutions</span>
-            <span class="category-name" id="category2-name">There Is No ___ Anime</span>
-            <span class="category-name" id="category3-name">Not Rocket Propelled Grenades</span>
-            <span class="category-name" id="category4-name">Kugimiya Rie Plays Non-Tsunderes</span>
-            <span class="category-name" id="category5-name">Obligatory Crossdressing Category</span>
-            <span class="category-name" id="category6-name">Ageless Beauties</span>
-            <!--
-            <span class="category-name" id="category7-name">Karaoke Time!</span>
-            -->
+            <div id="templates">
+                <div data-template="overlay"></div>
+                <div data-template="clue-row" class="row"></div>
+                <div data-template="category-cell" class="cell category"><div class="container"></div></div>
+                <div data-template="clue-cell" class="cell clue"><div class="container"></div></div>
+                <div data-template="empty-cell" class="cell empty"></div>
+                <div data-template="team-cell" class="cell team button non-selectable team-background">
+                    <div class="buttons">
+                        <div class="circle-button correct-button">&#x2713;</div>
+                        <div class="circle-button incorrect-button">&times;</div>
+                    </div>
+                    <div class="stats">
+                        <input type="text" class="team-name" />
+                        <input type="number" class="team-score" />
+                    </div>
+                            
+                </div>
+                <div data-template="wager-list-item" class="wager row">
+                    <span class="team-color-container cell"><span class="color-target" data-target-style="background-color"></span></span>
+                    <span class="team-name-container cell"><span class="team-name">Name</span></span>
+                    <span class="team-wager-container cell">
+                        <input />
+                        <span class="valid-input" data-valid="0x2714" data-invalid="0x2718">&#x2718;</span>
+                    </span>
+                </div>
+            </div>
 
-            <!-- copy and paste this -->
-            <span id="category0-clue1"></span>
-            <span id="category0-answer1"></span>
-            <span id="category0-clue2"></span>
-            <span id="category0-answer2"></span>
-            <span id="category0-clue3"></span>
-            <span id="category0-answer3"></span>
-            <span id="category0-clue4"></span>
-            <span id="category0-answer4"></span>
-            <span id="category0-clue5"></span>
-            <span id="category0-answer5"></span>
-
-            <span id="category1-clue1">Hare Hare Yukai</span>
-            <span id="category1-answer1">Suzumiya Haruhi no Yuutsu</span>
-            <span id="category1-clue2">Heartcatch Paradise!</span>
-            <span id="category1-answer2">Heartcatch! Precure</span>
-            <span id="category1-clue3">Motteike! Sailor Fuku</span>
-            <span id="category1-answer3">Lucky&#9734;Star</span>
-            <span id="category1-clue4">Neko Nyan Dance</span>
-            <span id="category1-answer4">Chocotto Sister</span>
-            <span id="category1-clue5">Motto Hade Ni Ne</span>
-            <span id="category1-answer5">Kannagi</span>
-
-            <span id="category2-clue1">Other than his lack of hair, he's pretty average-looking. But despite his skinny build, the hero can defeat enemies in one punch in this webcomic-turned-manga.</span>
-            <span id="category2-answer1">One-Punch Man</span>
-            <span id="category2-clue2">In this manga, a girl who looks like a delinquent learns to smile--too bad she looks even scarier when she does!</span>
-            <span id="category2-answer2">Waratte! Sotomura-san</span>
-            <span id="category2-clue3">There are seven girls in school with magical powers activated by kissing in this manga. It's up to the protagonist to find them all.</span>
-            <span id="category2-answer3">Yamada-kun and the Seven Witches</span>
-            <span id="category2-clue4">The main character of this manga is in college, but she's never had a boyfriend. That is, until her brother mistakes her for a high school student and asks her out!</span>
-            <span id="category2-answer4">Liar x Liar</span>
-            <span id="category2-clue5">By the author of Sora no Otoshimono, this manga is about a fictional girl who enters the real world--but to the main character's dismay, she is nothing like her manga counterpart.</span>
-            <span id="category2-answer5">Gou-dere Bishoujo Nagihara Sora</span>
-
-            <span id="category3-clue1">In Paper Mario, this pink bob-omb joins Mario after they break out of the cell in the Koopa Bros. Fortress.</span>
-            <span id="category3-answer1">Bombette</span>
-            <span id="category3-clue2">Shrapnel, Right Arm, and 8-Inch Cannon are all explosive single-use items in the same RPG as this self-destructive enemy.</span>
-            <span id="category3-answer2">Bomb</span>
-            <span id="category3-clue3">In Tales of Symphonia, Genis Sage learns this fiery spell after mastering Eruption.</span>
-            <span id="category3-answer3">Explode<br />or<br />Explosion</span>
-            <span id="category3-clue4">This is weakest of explosive spells in the Dragon Quest series. It's also an Italian card game about cowboys.</span>
-            <span id="category3-answer4">Bang</span>
-            <span id="category3-clue5">In Wild Arms, Cecilia can cast this non-elemental spell early on. Its radius allows it to target a group of enemies instead of just one.</span>
-            <span id="category3-answer5">Blast</span>
-
-            <span id="category4-clue1">In the fourth movie of the Diamond and Pearl sagas, Kugimiya plays this legendary psychic Pokemon.</span>
-            <span id="category4-answer1">Celebi</span>
-            <span id="category4-clue2">Kugimiya plays this idol in the Persona series. In fact, the character was redesigned to look a lot more like her actress.</span>
-            <span id="category4-answer2">Rise Kujikawa</span>
-            <span id="category4-clue3">This maid, played by Kugimiya, has a crush on the eldest of the Ushiromiya boys. She's quiet and shy… right?</span>
-            <span id="category4-answer3">Shannon</span>
-            <span id="category4-clue4">Kugimiya plays this blond boy--at least when he isn't using his powered up form in Haiyore! Nyarlko-san</span>
-            <span id="category4-answer4">Hastur</span>
-            <span id="category4-clue5">In Recorder and Randsell, Kugimiya plays this high school girl, who looks like a grade schooler. Her brother is just the opposite.</span>
-            <span id="category4-answer5">Atsumi Miyagawa</span>
-
-            <span id="category5-clue1">Sado Taro's best friend is a normal guy. But his alter ego, Antoinette, has a huge superiority complex in this masochistic anime.</span>
-            <span id="category5-answer1">MM!</span>
-            <span id="category5-clue2">This visual novel stars a girl punk rock band who like their fucking tea. But one of them is a guy?!</span>
-            <span id="category5-answer2">Kira&#9734;Kira</span>
-            <span id="category5-clue3">Ryou wants to be a male idol, but his looks make him a better female idol in this DS title.</span>
-            <span id="category5-answer3">THE iDOLM&#64;STER Dearly Stars</span>
-            <span id="category5-clue4">In this manga, a boy is kidnapped to serve as a body double for the princess--until tragedy strikes.</span>
-            <span id="category5-answer4">Shounen Oujo</span>
-            <span id="category5-clue5">Though its name sounds like an expression of joy, this manga publication specializes in traps.</span>
-            <span id="category5-answer5">Waai!</span>
-
-            <span id="category6-clue1"><img src="beauty1.jpg" /></span>
-            <span id="category6-answer1">Holo<br />(Spice and Wolf)</span>
-            <span id="category6-clue2"><img src="beauty2.png" /></span>
-            <span id="category6-answer2">Evangeline A. K. McDowell<br />(Negima!)</span>
-            <span id="category6-clue3"><img src="beauty3.png" /></span>
-            <span id="category6-answer3">Rachel Alucard<br />(BlazBlue)</span>
-            <span id="category6-clue4"><img src="beauty4.jpg" /></span>
-            <span id="category6-answer4">Tiki<br />(Fire Emblem)</span>
-            <span id="category6-clue5"><img src="beauty5.jpg"/></span>
-            <span id="category6-answer5">Filia Ul Copt<br />(Slayers)</span>
-
-            <span id="category7-clue1">
-                <audio controls>
-                    <source src="test.mp3" type="audio/mp3" />
-                    <source src="test.ogg" type="audio/ogg" />
-                </audio>
-            </span>
-            <span id="category7-answer1"></span>
-            <span id="category7-clue2">
-                Looking!<br />
-                The blitz loop this planet to search way.<br />
-                Only my RAILGUN can shoot it. imasugu <br />
-                Karada juu wo  hikari no hayasa de <br />
-                Kake megutta  tashikana yokan
-            </span>
-            <span id="category7-answer2">A Certain Scientific Railgun</span>
-            <span id="category7-clue3"></span>
-            <span id="category7-answer3"></span>
-            <span id="category7-clue4"></span>
-            <span id="category7-answer4"></span>
-            <span id="category7-clue5"></span>
-            <span id="category7-answer5"></span>
+            <div id="team-colors" data-min-opacity="0.3" data-max-opacity="0.8">
+                <span id="base-color" data-color="#808080"></span>
+                <span data-color="#800000"></span>
+                <span data-color="#008000"></span>
+                <span data-color="#000080"></span>
+                <span data-color="#400080"></span>
+                <span data-color="#D06000"></span>
+                <span data-color="#000080"></span>
+            </div>
+            <div id="categories" data-multiplier="200" data-daily-doubles="2">
+                <div class="example" data-name="There Is No ___ Anime" data-multiplier="400">
+                    <div>
+                        <div class="clue" data-type="text">Other than his lack of hair, he's pretty average-looking. But despite his skinny build, the hero can defeat enemies in one punch in this webcomic-turned-manga.</div>
+                        <div class="answer">One-Punch Man</div>
+                    </div>
+                    <div data-value="400">
+                        <div class="clue" data-type="image" data-source="beauty2.png"></div>
+                        <div class="answer">Evangeline A. K. McDowell<br/>(Negima!)</div>
+                    </div>
+                    <div>
+                        <div class="clue" data-type="audio" data-source="test.mp3" data-audio-type="audio/mp3"></div>
+                        <div class="answer">ololol</div>
+                    </div>
+                </div>
+                <div data-name="Ageless Beauties">
+                    <div>
+                        <div class="clue" data-type="image" data-source="beauty1.jpg"></div>
+                        <div class="answer">Holo<br/>(Spice and Wolf)</div>
+                    </div>
+                    <div>
+                        <div class="clue" data-type="image" data-source="beauty2.png"></div>
+                        <div class="answer">Evangeline A. K. McDowell<br/>(Negima!)</div>
+                    </div>
+                    <div>
+                        <div class="clue" data-type="image" data-source="beauty3.png"></div>
+                        <div class="answer">Rachel Alucard<br/>(BlazBlue)</div>
+                    </div>
+                    <div>
+                        <div class="clue" data-type="image" data-source="beauty4.jpg"></div>
+                        <div class="answer">Tiki<br/>(Fire Emblem)</div>
+                    </div>
+                    <div>
+                        <div class="clue" data-type="image" data-source="beauty5.jpg"></div>
+                        <div class="answer">Filia ul-Copt<br/>(The Slayers)</div>
+                    </div>
+                </div>
+                <div data-name="Round 1&hellip; Fight!">
+                    <div>
+                        <div class="clue">3&hellip;<br />2&hellip;<br />1&hellip;<br /><br />Go!</div>
+                        <div class="answer">Super Smash Bros. series</div>
+                    </div>
+                    <div>
+                        <div class="clue">The Wheel of Fate is Turning&mdash;Rebel 1<br /><br />Action!</div>
+                        <div class="answer">BlazBlue series</div>
+                    </div>
+                    <div>
+                        <div class="clue">Will the tide of battle turn?<br /><br />Fight!</div>
+                        <div class="answer">Street Fighter IV</div>
+                    </div>
+                    <div>
+                        <div class="clue">Get ready to brawl!<br /><br />Fight!</div>
+                        <div class="answer">Ultimate Marvel vs. Capcom 3</div>
+                    </div>
+                    <div>
+                        <div class="clue">Heaven or Hell?<br />Duel 1!<br /><br />Let's Rock!</div>
+                        <div class="answer">Guilty Gear series</div>
+                    </div>
+                </div>
+                <div data-name="Dance Revolutions">
+                    <div>
+                        <span class="clue">Hare Hare Yukai</span>
+                        <span class="answer">Suzumiya Haruhi no Yuutsu</span>
+                    </div>
+                    <div>
+                        <span class="clue">Heartcatch Paradise!</span>
+                        <span class="answer">Heartcatch! Precure</span>
+                    </div>
+                    <div>
+                        <span class="clue">Motteike! Sailor Fuku</span>
+                        <span class="answer">Lucky&#9734;Star</span>
+                    </div>
+                    <div>
+                        <span class="clue">Neko Nyan Dance</span>
+                        <span class="answer">Chocotto Sister</span>
+                    </div>
+                    <div>
+                        <span class="clue">Motto Hade Ni Ne</span>
+                        <span class="answer">Kannagi</span>
+                    </div>
+                </div>
+                <div data-name="There Is No ___ Anime">
+                    <div>
+                        <div class="clue">Other than his lack of hair, he's pretty average-looking. But despite his skinny build, the hero can defeat enemies in one punch in this webcomic-turned-manga.</div>
+                        <div class="answer">One-Punch Man</div>
+                    </div>
+                    <div>
+                        <div class="clue">In this manga, a girl who looks like a delinquent learns to smile&mdash;too bad she looks even scarier when she does!</div>
+                        <div class="answer">Waratte! Sotomura-san</div>
+                    </div>
+                    <div>
+                        <div class="clue">There are seven girls in school with magical powers activated by kissing in this manga. It's up to the protagonist to find them all.</div>
+                        <div class="answer">Yamada-kun and the Seven Witches</div>
+                    </div>
+                    <div>
+                        <div class="clue">The main character of this manga is in college, but she's never had a boyfriend. That is, until her brother mistakes her for a high school student and asks her out!</div>
+                        <div class="answer">Liar x Liar</div>
+                    </div>
+                    <div>
+                        <div class="clue">By the author of <cite>Sora no Otoshimono</cite>, this manga is about a fictional girl who enters the real world&mdash;but to the main character's dismay, she is nothing like her manga counterpart.</div>
+                        <div class="answer">Gou-dere Bishoujo Nagihara Sora</div>
+                    </div>
+                </div>
+                <div data-name="Kugimiya Is Not Tsundere">
+                    <div>
+                        <span class="clue">In the fourth movie of the Diamond and Pearl sagas, Kugimiya plays this legendary psychic Pokemon.</span>
+                        <span class="answer">Celebi</span>
+                    </div>
+                    <div>
+                        <span class="clue">Kugimiya plays this idol in the Persona series. In fact, the character was redesigned to look a lot more like her actress!</span>
+                        <span class="answer">Rise Kujikawa</span>
+                    </div>
+                    <div>
+                        <span class="clue">This maid, played by Kugimiya, has a crush on the eldest of the Ushiromiya boys. She's quiet and shy… right?</span>
+                        <span class="answer">Shannon</span>
+                    </div>
+                    <div>
+                        <span class="clue">Kugimiya plays this blond boy&mdash;at least when he isn't using his powered up form in <cite>Haiyore! Nyarlko-san</cite></span>
+                        <span class="answer">Hastur</span>
+                    </div>
+                    <div>
+                        <span class="clue">In <cite>Recorder and Randsell</cite>, Kugimiya plays this high school girl, who looks like a grade schooler. Her brother is just the opposite.</span>
+                        <span class="answer">Atsumi Miyagawa</span>
+                    </div>
+                </div>
+                <div data-name="Obligatory Crossdressing Category">
+                    <div>
+                        <div class="clue">Sado Taro's best friend is a normal guy. But his alter ego, Antoinette, has a huge superiority complex in this masochistic anime.</div>
+                        <div class="answer">MM!</div>
+                    </div>
+                    <div>
+                        <div class="clue">This visual novel stars a girl punk rock band who like their fucking tea. But one of them is a guy?!</div>
+                        <div class="answer">Kira&#x2605;Kira</div>
+                    </div>
+                    <div>
+                        <div class="clue">Ryou wants to be a male idol, but his looks make him a better female idol in this DS title.</div>
+                        <div class="answer">THE iDOLM@STER Dearly Stars</div>
+                    </div>
+                    <div>
+                        <div class="clue">In this manga, a boy is kidnapped to serve as a body double for the princess&mdash;until tragedy strikes.</div>
+                        <div class="answer">Shounen Oujo</div>
+                    </div>
+                    <div>
+                        <div class="clue">Though its name sounds like an expression of joy, this manga publication specializes in traps.</div>
+                        <div class="answer">WAai!</div>
+                    </div>
+                </div>
+                <div id="final-jeopardy" data-name="Boy Bands">
+                    <div>
+                        <span class="clue">This popular 90s boy band sang the opening and ending for Hanada Shounen-Shi</span>
+                        <span class="answer">Backstreet Boys</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div id="board" class="jeopardy-table">
-            <div class="jeopardy-column"></div>
-            <div class="jeopardy-column"></div>
-            <div class="jeopardy-column"></div>
-            <div class="jeopardy-column"></div>
-            <div class="jeopardy-column"></div>
-            <div class="jeopardy-column"></div>
-
-            <div class="jeopardy-row non-selectable header clue-row"></div>
-            <div class="jeopardy-row non-selectable clue-row"></div>
-            <div class="jeopardy-row non-selectable clue-row"></div>
-            <div class="jeopardy-row non-selectable clue-row"></div>
-            <div class="jeopardy-row non-selectable clue-row"></div>
-            <div class="jeopardy-row non-selectable clue-row"></div>
-            <!--
-            <div class="jeopardy-row non-selectable clue-row"></div>
-            <div class="jeopardy-row non-selectable clue-row"></div>
-            -->
+        <div id="display-section">
+            <div id="debug" style="color: white; position: absolute;">
+                HELLO
+            </div>
+            <section id="intro">
+            
+            </section>
+            
+            <section id="main-page">
+                <div class="table clue-table non-selectable">
+                    <div class="row category-row"></div>
+                </div>
+            </section>
+            <div id="bottom-menu">
+                <div class="table team-table">
+                    <div class="row">
+                        <div class="cell button final-jeopardy-button non-selectable">
+                            Final
+                        </div>
+                        <div class="cell filler close-popup-button"></div>
+                        <div class="add-team-position"></div>
+                        <div class="cell filler close-popup-button"></div>
+                        <div class="cell button add-team-button non-selectable">
+                            +
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div id="score-box">
-            <ul class="team-list">
-                <li id="final-jeopardy-button" class="non-selectable">Final Jeopardy</li>
-                <li class="filler non-selectable"></li>
-                <li id="add-team-button" class="non-selectable">
-                    +
-                </li>
-            </ul>
-        </div>
-        
-        
-
     </body>
 </html>
