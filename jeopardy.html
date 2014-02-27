@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+        <script type="text/javascript" src="jquery-2.1.0.min.js"></script>
+        <script type="text/javascript" src="jeopardy.js"></script>
+        <link rel="stylesheet" type="text/css" href="jeopardy.css"  />
+
+        <meta name='viewport' content='width=device-width; height=device-height;' />
+        <style type='text/css'>
+            @-ms-viewport { width: device-width; }
+            @-o-viewport { width: device-width; }
+            @viewport { width: device-width; }
+        </style>
+    </head>
+    <body>
+        <div id="templates">
+            <span id="header-template" class="jeopardy-cell"><h1 class="container"></h1></span>
+            <a id="cell-template" class="jeopardy-cell clue-cell" href="#1"><h2 class="container"></h2></a>
+            <li id="team-score-template" class="team-score">
+                <div class="score-buttons">
+                    <div class="plus-button non-selectable">+</div>
+                    <div class="minus-button non-selectable">&minus;</div>
+                </div>
+                <div class="team-stats">
+                    <div class="team-name-container">
+                        <span class="team-name">Row Row Fight the power</span>
+                    </div>
+                    <div class="team-points">100</div>
+                </div>
+            </li>
+            <li id="team-wager-template" class="team-wager">
+                <span class="team-name"></span>
+                <textarea class="team-wager"></textarea>
+                <span class="team-points"></span>
+            </li>
+        </div>
+
+        <div id="popups">
+            <div id="add-team-popup">
+                Team Name:
+                <textarea></textarea>
+                <button>Add Team</button>
+            </div>
+            
+            <div id="clue-popup">
+                <div class="container">
+                    <h1 class="category">Category</h1>
+                    <div class="jeopardy-table">
+                        <div class="jeopardy-row">
+                            <div class="jeopardy-cell show-answer-container ">
+                                <a class="show-answer">Show Answer</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="jeopardy-table clue-table">
+                        <div class="jeopardy-row">
+                            <div class="jeopardy-cell">
+                                <div class="clue clue-text">
+                                    In the fourth movie of the Diamond and Pearl sagas, Kugimiya plays this legendary psychic Pokemon.
+                                </div>
+                                <div class="answer clue-text">
+                                    Celebi
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="daily-double-popup">
+                <h1 class="non-selectable">Daily Double</h1>
+                <div class="wager-area non-selectable">
+                    Enter your wager
+                    <textarea></textarea>
+                    <div class="button non-selectable">
+                        Show Clue
+                    </div>
+                </div>
+            </div>
+
+            <div id="final-jeopardy-popup">
+                <h1 class="non-selectable">Final Jeopardy</h1>
+                <div class="wager-area non-selectable">
+                    Enter your wagers
+                    <ul class="wager-list">
+                    </ul>
+                    <div class="button non-selectable">
+                        Show Clue
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="data">
+            <div id="preset-colors">
+                <span>#800</span>
+                <span>#080</span>
+                <span>#008</span>
+                <span>#408</span>
+				<span>#BA0</span>
+				<span>#000</span>
+				<span>#F80</span>
+                <span>#084</span>
+            </div>
+
+            <span class="category-name" id="category1-name">Dance Revolutions</span>
+            <span class="category-name" id="category2-name">There Is No ___ Anime</span>
+            <span class="category-name" id="category3-name">Not Rocket Propelled Grenades</span>
+            <span class="category-name" id="category4-name">Kugimiya Rie Plays Non-Tsunderes</span>
+            <span class="category-name" id="category5-name">Obligatory Crossdressing Category</span>
+            <span class="category-name" id="category6-name">Ageless Beauties</span>
+            <!--
+            <span class="category-name" id="category7-name">Karaoke Time!</span>
+            -->
+
+            <!-- copy and paste this -->
+            <span id="category0-clue1"></span>
+            <span id="category0-answer1"></span>
+            <span id="category0-clue2"></span>
+            <span id="category0-answer2"></span>
+            <span id="category0-clue3"></span>
+            <span id="category0-answer3"></span>
+            <span id="category0-clue4"></span>
+            <span id="category0-answer4"></span>
+            <span id="category0-clue5"></span>
+            <span id="category0-answer5"></span>
+
+            <span id="category1-clue1">Hare Hare Yukai</span>
+            <span id="category1-answer1">Suzumiya Haruhi no Yuutsu</span>
+            <span id="category1-clue2">Heartcatch Paradise!</span>
+            <span id="category1-answer2">Heartcatch! Precure</span>
+            <span id="category1-clue3">Motteike! Sailor Fuku</span>
+            <span id="category1-answer3">Lucky&#9734;Star</span>
+            <span id="category1-clue4">Neko Nyan Dance</span>
+            <span id="category1-answer4">Chocotto Sister</span>
+            <span id="category1-clue5">Motto Hade Ni Ne</span>
+            <span id="category1-answer5">Kannagi</span>
+
+            <span id="category2-clue1">Other than his lack of hair, he's pretty average-looking. But despite his skinny build, the hero can defeat enemies in one punch in this webcomic-turned-manga.</span>
+            <span id="category2-answer1">One-Punch Man</span>
+            <span id="category2-clue2">In this manga, a girl who looks like a delinquent learns to smile--too bad she looks even scarier when she does!</span>
+            <span id="category2-answer2">Waratte! Sotomura-san</span>
+            <span id="category2-clue3">There are seven girls in school with magical powers activated by kissing in this manga. It's up to the protagonist to find them all.</span>
+            <span id="category2-answer3">Yamada-kun and the Seven Witches</span>
+            <span id="category2-clue4">The main character of this manga is in college, but she's never had a boyfriend. That is, until her brother mistakes her for a high school student and asks her out!</span>
+            <span id="category2-answer4">Liar x Liar</span>
+            <span id="category2-clue5">By the author of Sora no Otoshimono, this manga is about a fictional girl who enters the real world--but to the main character's dismay, she is nothing like her manga counterpart.</span>
+            <span id="category2-answer5">Gou-dere Bishoujo Nagihara Sora</span>
+
+            <span id="category3-clue1">In Paper Mario, this pink bob-omb joins Mario after they break out of the cell in the Koopa Bros. Fortress.</span>
+            <span id="category3-answer1">Bombette</span>
+            <span id="category3-clue2">Shrapnel, Right Arm, and 8-Inch Cannon are all explosive single-use items in the same RPG as this self-destructive enemy.</span>
+            <span id="category3-answer2">Bomb</span>
+            <span id="category3-clue3">In Tales of Symphonia, Genis Sage learns this fiery spell after mastering Eruption.</span>
+            <span id="category3-answer3">Explode<br />or<br />Explosion</span>
+            <span id="category3-clue4">This is weakest of explosive spells in the Dragon Quest series. It's also an Italian card game about cowboys.</span>
+            <span id="category3-answer4">Bang</span>
+            <span id="category3-clue5">In Wild Arms, Cecilia can cast this non-elemental spell early on. Its radius allows it to target a group of enemies instead of just one.</span>
+            <span id="category3-answer5">Blast</span>
+
+            <span id="category4-clue1">In the fourth movie of the Diamond and Pearl sagas, Kugimiya plays this legendary psychic Pokemon.</span>
+            <span id="category4-answer1">Celebi</span>
+            <span id="category4-clue2">Kugimiya plays this idol in the Persona series. In fact, the character was redesigned to look a lot more like her actress.</span>
+            <span id="category4-answer2">Rise Kujikawa</span>
+            <span id="category4-clue3">This maid, played by Kugimiya, has a crush on the eldest of the Ushiromiya boys. She's quiet and shy… right?</span>
+            <span id="category4-answer3">Shannon</span>
+            <span id="category4-clue4">Kugimiya plays this blond boy--at least when he isn't using his powered up form in Haiyore! Nyarlko-san</span>
+            <span id="category4-answer4">Hastur</span>
+            <span id="category4-clue5">In Recorder and Randsell, Kugimiya plays this high school girl, who looks like a grade schooler. Her brother is just the opposite.</span>
+            <span id="category4-answer5">Atsumi Miyagawa</span>
+
+            <span id="category5-clue1">Sado Taro's best friend is a normal guy. But his alter ego, Antoinette, has a huge superiority complex in this masochistic anime.</span>
+            <span id="category5-answer1">MM!</span>
+            <span id="category5-clue2">This visual novel stars a girl punk rock band who like their fucking tea. But one of them is a guy?!</span>
+            <span id="category5-answer2">Kira&#9734;Kira</span>
+            <span id="category5-clue3">Ryou wants to be a male idol, but his looks make him a better female idol in this DS title.</span>
+            <span id="category5-answer3">THE iDOLM&#64;STER Dearly Stars</span>
+            <span id="category5-clue4">In this manga, a boy is kidnapped to serve as a body double for the princess--until tragedy strikes.</span>
+            <span id="category5-answer4">Shounen Oujo</span>
+            <span id="category5-clue5">Though its name sounds like an expression of joy, this manga publication specializes in traps.</span>
+            <span id="category5-answer5">Waai!</span>
+
+            <span id="category6-clue1"><img src="beauty1.jpg" /></span>
+            <span id="category6-answer1">Holo<br />(Spice and Wolf)</span>
+            <span id="category6-clue2"><img src="beauty2.png" /></span>
+            <span id="category6-answer2">Evangeline A. K. McDowell<br />(Negima!)</span>
+            <span id="category6-clue3"><img src="beauty3.png" /></span>
+            <span id="category6-answer3">Rachel Alucard<br />(BlazBlue)</span>
+            <span id="category6-clue4"><img src="beauty4.jpg" /></span>
+            <span id="category6-answer4">Tiki<br />(Fire Emblem)</span>
+            <span id="category6-clue5"><img src="beauty5.jpg"/></span>
+            <span id="category6-answer5">Filia Ul Copt<br />(Slayers)</span>
+
+            <span id="category7-clue1">
+                <audio controls>
+                    <source src="test.mp3" type="audio/mp3" />
+                    <source src="test.ogg" type="audio/ogg" />
+                </audio>
+            </span>
+            <span id="category7-answer1"></span>
+            <span id="category7-clue2">
+                Looking!<br />
+                The blitz loop this planet to search way.<br />
+                Only my RAILGUN can shoot it. imasugu <br />
+                Karada juu wo  hikari no hayasa de <br />
+                Kake megutta  tashikana yokan
+            </span>
+            <span id="category7-answer2">A Certain Scientific Railgun</span>
+            <span id="category7-clue3"></span>
+            <span id="category7-answer3"></span>
+            <span id="category7-clue4"></span>
+            <span id="category7-answer4"></span>
+            <span id="category7-clue5"></span>
+            <span id="category7-answer5"></span>
+        </div>
+
+        <div id="board" class="jeopardy-table">
+            <div class="jeopardy-column"></div>
+            <div class="jeopardy-column"></div>
+            <div class="jeopardy-column"></div>
+            <div class="jeopardy-column"></div>
+            <div class="jeopardy-column"></div>
+            <div class="jeopardy-column"></div>
+
+            <div class="jeopardy-row non-selectable header clue-row"></div>
+            <div class="jeopardy-row non-selectable clue-row"></div>
+            <div class="jeopardy-row non-selectable clue-row"></div>
+            <div class="jeopardy-row non-selectable clue-row"></div>
+            <div class="jeopardy-row non-selectable clue-row"></div>
+            <div class="jeopardy-row non-selectable clue-row"></div>
+            <!--
+            <div class="jeopardy-row non-selectable clue-row"></div>
+            <div class="jeopardy-row non-selectable clue-row"></div>
+            -->
+        </div>
+
+        <div id="score-box">
+            <ul class="team-list">
+                <li id="final-jeopardy-button" class="non-selectable">Final Jeopardy</li>
+                <li class="filler non-selectable"></li>
+                <li id="add-team-button" class="non-selectable">
+                    +
+                </li>
+            </ul>
+        </div>
+        
+        
+
+    </body>
+</html>
