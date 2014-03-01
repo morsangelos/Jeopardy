@@ -24,7 +24,7 @@
                 <div data-color="#000000">Audience</div>
             </div>
             <div id="popups">
-                <div data-popup="clue" class="clue-popup popup-box non-selectable">
+                <div data-popup="jeopardy" class="jeopardy-popup clue-popup popup-box non-selectable">
                     <h1></h1>
                     <div class="table">
                         <div class="row clue-row"><div class="cell container"></div></div>
@@ -39,6 +39,25 @@
                     </div>
                     <div class="close-button circle-button">&times;</div>
                     <div class="round-timer hide-toggle"><span class="timer-value">10</span></div>
+                </div>
+                <div data-popup="final-jeopardy" class="final-jeopardy-popup clue-popup popup-box non-selectable">
+                    <h1></h1>
+                    <div class="table">
+                        <div class="row clue-row"><div class="cell container"></div></div>
+                        <div class="row controls-row">
+                            <div class="cell music-container">
+                                <span class="play-button circle-button" title="Play/Pause">&#x25b6;</span>
+                                <audio controls>
+                                    <source src="test.mp3" type="audio/mp3" />
+                                </audio>
+                            </div>
+                            <div class="cell filler"></div>
+                            <div class="cell"><span class="show-score-button circle-button">Final Scores</span></div>
+                            <div class="cell filler"></div>
+                            <div class="cell"><span class="answer-button circle-button" title="Show Answer">A</span></div>
+                        </div>
+                    </div>
+                    
                 </div>
                 <div data-popup="add-team" class="add-team-popup popup-box">
                     <div>
@@ -91,6 +110,11 @@
                         <input />
                         <span class="valid-input" data-valid="0x2714" data-invalid="0x2718">&#x2718;</span>
                     </span>
+                </div>
+                <div data-template="clue-node" class='table'>
+                    <div class='row'>
+                        <div class='cell clue-node-target'></div>
+                    </div>
                 </div>
             </div>
 
@@ -258,6 +282,8 @@
                 </div>
             </div>
         </div>
+        
+        <span id="final-jeopardy-music" data-type="audio" data-audio-type="audio/mp3" data-source="test.mp3"></span>
 
         <div id="display-section">
             <div id="debug" style="color: white; position: absolute;">

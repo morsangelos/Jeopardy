@@ -264,6 +264,11 @@ body {
     font-size: 5vh;
 }
 
+.clue-popup .controls-row .circle-button
+{
+    vertical-align: middle;
+}
+
 .clue-popup .controls-row .answer-timer-cell
 {
     width: 65vw;
@@ -402,6 +407,37 @@ body {
 {
     transition: opacity 0.4s, transform 0.4s;
     transform: scale(0.3);
+}
+
+.final-jeopardy-popup .cell.filler {
+    width: 50%;
+}
+
+.final-jeopardy-popup .music-container audio {
+    display: none;
+}
+
+.final-jeopardy-popup .show-score-button {
+    width: auto;
+    white-space: nowrap;
+    border-radius: 2.5vh;
+    padding: 1.5vh;
+    padding-top: 0.5vh;
+    padding-bottom: 0;
+    
+    display: none;
+}
+
+.play-button.circle-button {
+    font-size: 7vh;
+    line-height: 6vh;
+}
+
+@-moz-document url-prefix() {
+    .play-button.circle-button {
+        font-size: 4vh;
+        line-height: 6vh;
+    }
 }
 
 .hide-toggle

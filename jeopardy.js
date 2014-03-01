@@ -69,9 +69,9 @@ function Popup(node, popupName, overlayName)
         return SpawnTemplate(this);
     }
     this.CloseCallbacks = [];
-    this.Dismiss = function () {
+    this.Dismiss = function (dismissArgument) {
         for (var i in this.CloseCallbacks) {
-            this.CloseCallbacks[i]();
+            this.CloseCallbacks[i](dismissArgument);
         }
     }
     this.Clone = function () {
@@ -150,10 +150,10 @@ function RetrieveClue(clueNode, baseMultiplier, categoryMultiplier, category, ca
     if (givenItemVal && givenItemVal != 0) {
         defaultItemVal = givenItemVal;
     }
-
-    var clueNode = GenerateNodeFromData(clueVal);
+    
+    var clueNode = GenerateNodeFromData(clueVal, templates["clue-node"].Spawn().Node);
     clueNode.addClass("clue");
-    var answerNode = GenerateNodeFromData(answerVal);
+    var answerNode = GenerateNodeFromData(answerVal, templates["clue-node"].Spawn().Node);
     answerNode.addClass("answer");
 
     var item = new Clue(clueNode, answerNode, defaultItemVal, categoryIndex, clueIndex);
@@ -227,10 +227,9 @@ function RetrievePopups(popupNode, overlayName)
     return popups;
 }
 
-function GenerateNodeFromData(dataNode)
+function GenerateNodeFromData(dataNode, containerNode)
 {
-    var node = $("<div class='table'><div class='row'><div class='cell'></div></div></div>");
-    var item;
+    var item = null;
     switch (dataNode.data("type")) {
         default:
         case "text":
@@ -251,8 +250,8 @@ function GenerateNodeFromData(dataNode)
             item.append("<source>");
             item.find("source").attr("src", audioSource).attr("type", audioType);
     }
-    node.find(".cell").append(item)
-    return node;
+    containerNode.find(".clue-node-target").addBack(".clue-node-target").append(item)
+    return containerNode;
 }
 
 
@@ -261,7 +260,6 @@ function GenerateClueList(categories)
     var outerList = $("<ul />");
     for (var i in categories) {
         var category = categories[i];
-        alert(category.Name);
         var outerListItem = $("<li />");
         var innerList = $("<ul />");
         outerListItem.append($("<h1>" + category.Name + "</h1>"));
@@ -317,7 +315,7 @@ function ClueBoxClickFunction(node, category, item, value)
             // TODO
         }
 
-        var popupObject = DisplayPopup("clue");
+        var popupObject = DisplayPopup("jeopardy");
         var popup = popupObject.Node;
         for (var team in teams) {
             teams[team].SetWager(value);
@@ -458,7 +456,7 @@ function ClueBoxClickFunction(node, category, item, value)
                     break;
 
                 case 13:
-                    DestroyPopupFunction(popupObject)();
+                    DestroyPopupFunction(popupObject, 0)();
                     break;
 
 
@@ -472,7 +470,7 @@ function ClueBoxClickFunction(node, category, item, value)
         roundTimerButton.click(toggleRoundTimer);
         answerTimerButton.click(toggleAnswerTimer);
         $(".answer-timer").click(toggleAnswerTimer);
-        popupObject.CloseCallbacks.push(function () {
+        popupObject.CloseCallbacks.push(function (dismissArguments) {
             stopRoundTimer();
             stopAnswerTimer();
             ClearKeyShortcuts();
@@ -501,10 +499,10 @@ function DisplayPopup(key)
 {
     var popupObject = popups[key].Spawn();
     var popup = popupObject.Node;
-    popup.find(".overlay").click(DestroyPopupFunction(popupObject));
-    popup.find(".close-button").click(DestroyPopupFunction(popupObject));
+    popup.find(".overlay").click(DestroyPopupFunction(popupObject, 0));
+    popup.find(".close-button").click(DestroyPopupFunction(popupObject, 0));
     var me = function () {
-        DestroyPopupFunction(popupObject)();
+        DestroyPopupFunction(popupObject, 0)();
         $(".close-popup-button").off("click", me);
     };
     $(".close-popup-button").click(me);
@@ -512,12 +510,61 @@ function DisplayPopup(key)
     return popupObject;
 }
 
-function DestroyPopupFunction(popupObject)
+function DisplayFinalJeopardyPopup(category, item)
+{
+    return function () {
+        var popupObject = DisplayPopup("final-jeopardy");
+        var popup = popupObject.Node;
+
+        popup.find("h1").text(category.Name);
+        var clue = item.Clue.clone();
+        var answer = item.Answer.clone()
+        ToggleVisibility(answer);
+        popup.find(".container").append(answer);
+        popup.find(".container").append(clue);
+
+        popup.find(".music-container").each(function (i, value) {
+            var musicNode = $(value);
+            var audio = musicNode.find("audio")[0];
+            var toggle = musicNode.find(".play-button");
+
+            toggle.click(function () {
+                if (audio.paused) {
+                    audio.play();
+                    toggle.addClass("activated");
+                } else {
+                    audio.pause();
+                    toggle.removeClass("activated");
+                }
+            });
+        });
+
+        var playButton = popup.find(".music-container .play-button");
+        var answerButton = popup.find(".answer-button");
+        var toggleAnswer = function () {
+            var first = popup.find(".container").children(":eq(0)");
+            var second = popup.find(".container").children(":eq(1)");
+            first.before(second);
+
+            ToggleVisibility(clue);
+            ToggleVisibility(answer);
+            answerButton.toggleClass("activated");
+            playButton.toggleClass("hide-toggle");
+            //node.addClass("disabled");
+        }
+        revealAnswer = function () {
+            if (!answerButton.hasClass("activated")) { toggleAnswer(); }
+        }
+        answerButton.click(toggleAnswer);
+    }
+}
+
+function DestroyPopupFunction(popupObject, dismissArgument)
 {
     var popup = popupObject.Node;
     return function () {
         popup.addClass("closing");
-        popupObject.Dismiss();
+        popupObject.Dismiss(dismissArgument);
         popup.bind('animationend', function () {
             popup.remove();
         });
@@ -618,7 +665,7 @@ function OpenTeamEditorFunction(team)
             team.SetScore(score);
             team.SetColor(color);
 
-            DestroyPopupFunction(popup)();
+            DestroyPopupFunction(popup, 0)();
         };
         popup.Node.find("button.save-changes").click(submit);
         popup.Node.find("button.delete-team").click();
@@ -704,6 +751,26 @@ function FinalJeopardyWagerPopupFunction(popupName, finalJeopardy) {
             input.val("");
             listNode.append(teamNode);
         }
+        popupObject.Node.find(".reveal-clue").click(function () {
+            DestroyPopupFunction(popupObject, 1)();
+        });
+
+        popupObject.CloseCallbacks.push(function (dismissArguments) {
+            if (dismissArguments == 0) {
+                for (var team in teams) { teams[team].SetWager(0); }
+            } else {
+                var inputs = listNode.find("input");
+                for (var team in teams) {
+                    var value = inputs[team].value;
+                    if (value) {
+                        teams[team].SetWager(value);
+                    } else {
+                        teams[team].SetWager(0);
+                    }
+                }
+                DisplayFinalJeopardyPopup(finalJeopardy, finalJeopardy.Clues[0])();
+            }
+        });
     }
 }
 
