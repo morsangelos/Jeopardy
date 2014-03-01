@@ -250,7 +250,7 @@ function GenerateNodeFromData(dataNode, containerNode)
             item.append("<source>");
             item.find("source").attr("src", audioSource).attr("type", audioType);
     }
-    containerNode.find(".clue-node-target").addBack(".clue-node-target").append(item)
+    containerNode.find(".container-node-target").addBack(".container-node-target").append(item)
     return containerNode;
 }
 
@@ -524,6 +524,7 @@ function DisplayFinalJeopardyPopup(category, item)
 
         popup.find(".music-container").each(function (i, value) {
             var musicNode = $(value);
+            musicNode.append(GenerateNodeFromData($("#final-jeopardy-music"), $("<div class='container-node-target' />")));
             var audio = musicNode.find("audio")[0];
             var toggle = musicNode.find(".play-button");
 
