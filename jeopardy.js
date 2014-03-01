@@ -192,7 +192,7 @@ function RetrieveCategories(categoriesNode) {
         dailyDoublesList.push(index);
         items[index].IsDailyDouble = true;
     }
-    Debug("DAILY DOUBLES: " + dailyDoublesList.map(function(i) { return items[index].Value }));
+    Debug("DAILY DOUBLES: " + dailyDoublesList.map(function(i) { return items[i].Value }));
     return categories;
 }
 
@@ -302,7 +302,12 @@ function GenerateClueTable(clueTable, categories)
             var clue = templates["clue-cell"].Spawn().Node;
             clue.find(".container").text(item.Value);
             currentRow.append(clue);
-            clue.click(ClueBoxClickFunction(clue, category, item, item.Value));
+            
+            if (item.IsDailyDouble) {
+                clue.click(DailyDoubleWagerPopupFunction("daily-double", clue, category, item));
+            } else {
+                clue.click(ClueBoxClickFunction(clue, category, item, item.Value));
+            }
         }
     }
 }
@@ -311,11 +316,10 @@ var revealAnswer = null;
 function ClueBoxClickFunction(node, category, item, value)
 {
     return function () {
-        if (item.IsDailyDouble) {
-            // TODO
-        }
-
         var popupObject = DisplayPopup("jeopardy");
+        if (item.IsDailyDouble) {
+            popupObject.Node.addClass("daily-double");
+        }
         var popup = popupObject.Node;
         for (var team in teams) {
             teams[team].SetWager(value);
@@ -455,17 +459,12 @@ function ClueBoxClickFunction(node, category, item, value)
                     toggleRoundTimer();
                     break;
 
-                case 13:
-                    DestroyPopupFunction(popupObject, 0)();
-                    break;
-
-
                 default:
                     break;
             }
         };
 
-        $(document).keypress(readKeys);
+        $(document).keydown(readKeys);
 
         roundTimerButton.click(toggleRoundTimer);
         answerTimerButton.click(toggleAnswerTimer);
@@ -687,7 +686,7 @@ function TeamAnswerButtonFunction(team, multiplier, shouldReveal)
 {
     return function () {
         team.ApplyWager(multiplier);
-        if (shouldReveal && revealAnswer != null) revealAnswer();
+        if (team.Wager > 0 && shouldReveal && revealAnswer != null) revealAnswer();
     }
 }
 
@@ -732,6 +731,31 @@ function RetrieveTeamColors(node)
         }
     });
     return colors;
+}
+
+function DailyDoubleWagerPopupFunction(popupName, node, category, item) {
+    return function () {
+        var popupObject = DisplayPopup(popupName);
+        popupObject.Node.find(".category-name").text(category.Name);
+        popupObject.Node.find("input").bind("input", TeamWagerChangeInput(popupObject.Node));
+        popupObject.Node.find("input").keydown(function (event) {
+            if (event.which == 13) revealClue();
+        });
+
+        var revealClue = function () {
+            DestroyPopupFunction(popupObject, 1)();
+        };
+        popupObject.Node.find(".reveal-clue").click(revealClue);
+
+        popupObject.CloseCallbacks.push(function (dismissArgument) {
+            if (dismissArgument == 0) return;
+            var value = parseInt(popupObject.Node.find("input")[0].value);
+            if (!value) {
+                value = 0;
+            }
+            ClueBoxClickFunction(node, category, item, value)();
+        });
+    }
 }
 
 function FinalJeopardyWagerPopupFunction(popupName, finalJeopardy) {
