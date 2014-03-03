@@ -494,8 +494,11 @@ function Debug(s)
     $("#debug").text(s);
 }
 
+var popupCount = 0;
 function DisplayPopup(key)
 {
+    $(".final-jeopardy-button").addClass("hide-toggle");
+    popupCount++;
     var popupObject = popups[key].Spawn();
     var popup = popupObject.Node;
     popup.find(".overlay").click(DestroyPopupFunction(popupObject, 0));
@@ -563,6 +566,8 @@ function DestroyPopupFunction(popupObject, dismissArgument)
 {
     var popup = popupObject.Node;
     return function () {
+        popupCount--;
+        if (popupCount == 0) $(".final-jeopardy-button").removeClass("hide-toggle");
         popup.addClass("closing");
         popupObject.Dismiss(dismissArgument);
         popup.bind('animationend', function () {
